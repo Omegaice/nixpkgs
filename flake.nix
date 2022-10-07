@@ -15,6 +15,7 @@
 
         packages = import nixpkgs {
           inherit system;
+          config.allowUnfree = true; # For CUDA packages
           overlays = [
             self.overlay.${system}
           ];
