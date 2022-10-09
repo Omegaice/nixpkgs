@@ -36,6 +36,9 @@
   help2man,
   sphinx,
   sphinx-rtd-theme,
+  # Testing
+  pytest,
+  mock,
 }:
 buildPythonPackage rec {
   pname = "core";
@@ -121,6 +124,13 @@ buildPythonPackage rec {
     make install
     runHook pipInstallPhase
     install -Dm755 daemon/scripts/* -t $out/bin
+  '';
+
+  checkInputs = [pytest mock];
+  checkPhase = ''
+    pushd daemon
+    poetry run pytest -v --mock --lf -x tests
+    popd
   '';
 
   meta = with lib; {
