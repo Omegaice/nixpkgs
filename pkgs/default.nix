@@ -14,5 +14,15 @@ in
       ospf-mdr = overlay-super.callPackage ./applications/networking/ospf-mdr/default.nix {};
 
       pythonPackagesExtensions = overlay-super.pythonPackagesExtensions ++ [(import ./top-level/python-packages.nix)];
+
+      # nixosTests = {
+      #   inherit (overlay-super) nixosTests;
+      #   core-emu = nixosTest ../nixos/tests/core-emu.nix;
+      # };
+      nixosTests =
+        overlay-super.nixosTests
+        // {
+          core-emu = overlay-super.nixosTest ../nixos/tests/core-emu.nix;
+        };
     }
     // builtins.mapAttrs (name: value: value.overrideScope' cudaPackagesExtension) (cudaPackageFilter overlay-super)

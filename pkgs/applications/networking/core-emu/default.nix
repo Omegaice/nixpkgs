@@ -37,6 +37,7 @@
   sphinx,
   sphinx-rtd-theme,
   # Testing
+  nixosTests,
   pytest,
   mock,
 }:
@@ -132,6 +133,10 @@ buildPythonPackage rec {
     poetry run pytest -v --mock --lf -x tests
     popd
   '';
+
+  passthru.tests = {
+    core-emu = nixosTests.core-emu;
+  };
 
   meta = with lib; {
     homepage = "https://coreemu.github.io/core/";
