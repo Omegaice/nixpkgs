@@ -55,9 +55,11 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "OSPF MANET Designated Routers implementation (RFCs 5614, 5243, 5838)";
-    longDescription = "The Open Shortest Path First-MANET Designated Router (OSPF-MDR) implementation for quagga OSPFv3 is an implementation of RFC 5614 (OSPF MDR), RFC 5243 (OSPF Database Exchange Optimization), and RFC 5838 (OSPFv3 Address Families) for efficient routing in Mobile Ad hoc Networks (MANETs).
+    longDescription = ''
+      The Open Shortest Path First-MANET Designated Router (OSPF-MDR) implementation for quagga OSPFv3 is an implementation of RFC 5614 (OSPF MDR), RFC 5243 (OSPF Database Exchange Optimization), and RFC 5838 (OSPFv3 Address Families) for efficient routing in Mobile Ad hoc Networks (MANETs).
 
-      This software, based on the open source Quagga Routing Suite, was originally developed by Richard Ogier and Boeing Phantom Works, and is now being maintained by the Mobile Routing project at the NRL.";
+      This software, based on the open source Quagga Routing Suite, was originally developed by Richard Ogier and Boeing Phantom Works, and is now being maintained by the Mobile Routing project at the NRL.
+    '';
     homepage = "https://www.nrl.navy.mil/Our-Work/Areas-of-Research/Information-Technology/NCS/OSPF-MANET/";
     license = licenses.gpl2;
     platforms = platforms.unix;

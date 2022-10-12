@@ -1,19 +1,19 @@
-final: prev:
-let
+final: prev: let
   inherit (final) callPackage;
   inherit (prev) cudatoolkit cudaVersion lib pkgs;
 
-  buildCubPackage = args: callPackage ./generic.nix { } args;
+  buildCubPackage = args: callPackage ./generic.nix {} args;
 
-  toUnderscore = str: lib.replaceStrings [ "." ] [ "_" ] str;
+  toUnderscore = str: lib.replaceStrings ["."] ["_"] str;
 
   cubPackages = with lib; let
     computeName = version: "cub_${toUnderscore version}";
 
-    allBuilds = mapAttrs'
+    allBuilds =
+      mapAttrs'
       (
         version: file:
-          nameValuePair (computeName version) (callPackage ./generic.nix { } (builtins.head file))
+          nameValuePair (computeName version) (callPackage ./generic.nix {} (builtins.head file))
       )
       cubVersions;
 
@@ -21,7 +21,7 @@ let
       "cub" = allBuilds.${computeName cubDefaultVersion};
     };
   in
-  allBuilds // defaultBuild;
+    allBuilds // defaultBuild;
 
   cubVersions = {
     "1.10.0" = [
@@ -35,4 +35,4 @@ let
 
   cubDefaultVersion = "1.10.0";
 in
-cubPackages
+  cubPackages
