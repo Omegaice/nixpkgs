@@ -146,6 +146,7 @@ buildPythonPackage rec {
     '';
     license = licenses.bsd2;
     maintainers = with maintainers; [];
-    platforms = with platforms; linux;
+    platforms = platforms.linux;
+    badPlatforms = platforms.i686;
   };
 }
