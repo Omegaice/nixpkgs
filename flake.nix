@@ -12,7 +12,7 @@
     flake-utils.lib.eachDefaultSystem (
       system: let
       in {
-        overlay = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/default.nix {
+        overlays.default = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/default.nix {
           inherit (nixpkgs) lib pkgs;
         };
 
@@ -20,7 +20,7 @@
           inherit system;
           config.allowUnfree = true; # For CUDA packages
           overlays = [
-            self.overlay.${system}
+            self.overlays.${system}.default
           ];
         };
       }
