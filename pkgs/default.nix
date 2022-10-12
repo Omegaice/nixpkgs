@@ -12,6 +12,7 @@ in
       core-emu = with overlay-super.python3Packages; toPythonApplication core-emu;
       emane = overlay-super.callPackage ./applications/networking/emane/default.nix {};
       ospf-mdr = overlay-super.callPackage ./applications/networking/ospf-mdr/default.nix {};
+      salt-lint = overlay-super.callPackage ./development/tools/salt-lint/default.nix {};
 
       pythonPackagesExtensions = overlay-super.pythonPackagesExtensions ++ [(import ./top-level/python-packages.nix)];
 
