@@ -33,11 +33,7 @@
         inherit (pkgs) lib;
         overlayAttrs = builtins.attrNames (import ./pkgs/default.nix pkgs pkgs);
       in {
-        packages = let
-          drvAttrs = builtins.filter (n: lib.isDerivation pkgs.${n}) overlayAttrs;
-          drvAttrsforSystem = builtins.filter (n: lib.meta.availableOn {system = system;} pkgs.${n}) drvAttrs;
-        in
-          {} // lib.listToAttrs (map (n: lib.nameValuePair n pkgs.${n}) drvAttrsforSystem);
+        packages = pkgs;
       }
     );
 }
