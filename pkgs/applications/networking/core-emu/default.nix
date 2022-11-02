@@ -125,6 +125,9 @@ buildPythonPackage rec {
     make install
     runHook pipInstallPhase
     install -Dm755 daemon/scripts/* -t $out/bin
+
+    mkdir -p $out/etc/core
+    cp daemon/data/*.conf $out/etc/core/
   '';
 
   checkInputs = [pytest mock];
