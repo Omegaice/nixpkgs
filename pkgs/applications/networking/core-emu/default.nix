@@ -133,7 +133,7 @@ buildPythonPackage rec {
   checkInputs = [pytest mock];
   checkPhase = ''
     pushd daemon
-    poetry run pytest -v --mock --lf -x tests
+    pytest -v --mock --lf -x tests
     popd
   '';
 
