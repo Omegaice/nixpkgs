@@ -1,39 +1,49 @@
 {
-  description = "A basic flake with a shell";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  description = "";
 
-  outputs = {
+  inputs = {
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  };
+
+  outputs = inputs @ {
     self,
+    flake-parts,
     nixpkgs,
-    flake-utils,
     ...
   }:
-    {
-      overlays = {
-        default = import ./pkgs/default.nix;
-        tests = import ./nixos/tests/default.nix;
-        main = import ./pkgs/top-level/all-packages.nix;
-        cuda = import ./pkgs/top-level/cuda-packages.nix;
-        python = import ./pkgs/top-level/python-packages.nix;
-      };
-    }
-    // flake-utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = import nixpkgs {
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
+      imports = [
+        ./pkgs/top-level/all-packages.nix
+        ./pkgs/top-level/cuda-packages.nix
+        ./pkgs/top-level/python-packages.nix
+      ];
+      perSystem = {
+        inputs',
+        system,
+        lib,
+        pkgs,
+        ...
+      }: let
+        nixPkgs = import inputs.nixpkgs {
           inherit system;
-          config.allowUnfree = true; # For CUDA packages
-          overlays = [
-            self.overlays.main
-            self.overlays.tests
-            self.overlays.python
-            self.overlays.cuda
-          ];
+          config.allowUnfree = true;
         };
-        inherit (pkgs) lib;
-        overlayAttrs = builtins.attrNames (import ./pkgs/default.nix pkgs pkgs);
+
+        addedPackages = builtins.map (e: {"${e}" = pkgs."${e}";}) (lib.lists.subtractLists (builtins.attrNames nixPkgs) (builtins.attrNames pkgs));
+        packages = lib.lists.foldl (a: b: a // b) {} addedPackages;
       in {
-        packages = pkgs;
-      }
-    );
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          overlays = lib.attrsets.mapAttrsToList (n: v: v) self.overlays;
+        };
+
+        inherit packages;
+
+        formatter = inputs'.nixpkgs.legacyPackages.alejandra;
+      };
+      flake = {config, ...}: {};
+    };
 }

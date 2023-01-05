@@ -25,7 +25,7 @@ final: prev: let
 
   cubVersions = {
     "1.10.0" = [
-      rec {
+      {
         fullVersion = "1.10.0";
         sha256 = "sha256-JyyNaTrtoSGiMP7tVUu9lFL07lyfJzRTVtx8yGy6/BI=";
         includedIn = "11.2";
