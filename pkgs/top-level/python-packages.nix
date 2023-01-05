@@ -1,8 +1,17 @@
-{...}: {
-  flake = {
-    overlays.python = final: prev: {
+{lib, ...}: {
+  perSystem = {
+    config,
+    self',
+    inputs',
+    pkgs,
+    final,
+    ...
+  }: let
+    pythonPackages = lib.filterAttrs (n: v: builtins.match "python3[[:digit:]]+?" n != null) final;
+  in {
+    overlayAttrs = {
       pythonPackagesExtensions =
-        prev.pythonPackagesExtensions
+        pkgs.pythonPackagesExtensions
         ++ [
           (pself: pprev: {
             core-emu = pself.callPackage ../applications/networking/core-emu/default.nix {};

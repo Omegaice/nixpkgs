@@ -15,11 +15,13 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
       imports = [
+        flake-parts.flakeModules.easyOverlay
         ./pkgs/top-level/all-packages.nix
         ./pkgs/top-level/cuda-packages.nix
         ./pkgs/top-level/python-packages.nix
       ];
       perSystem = {
+        self',
         inputs',
         system,
         lib,
@@ -30,20 +32,12 @@
           inherit system;
           config.allowUnfree = true;
         };
-
-        addedPackages = builtins.map (e: {"${e}" = pkgs."${e}";}) (lib.lists.subtractLists (builtins.attrNames nixPkgs) (builtins.attrNames pkgs));
-        packages = lib.lists.foldl (a: b: a // b) {} addedPackages;
       in {
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          overlays = lib.attrsets.mapAttrsToList (n: v: v) self.overlays;
-        };
+        _module.args.pkgs = nixPkgs;
 
-        inherit packages;
+        checks = builtins.mapAttrs (name: value: value.overrideAttrs (old: {doCheck = true;})) self'.packages;
 
         formatter = inputs'.nixpkgs.legacyPackages.alejandra;
       };
-      flake = {config, ...}: {};
     };
 }
